@@ -1,0 +1,65 @@
+REPORT ZSHUYIN_0704.
+
+
+
+DATA : L_TIME TYPE T,
+       L_AF_TIME TYPE T,
+       L_DATE TYPE D,
+       L_HOUR TYPE INT2,
+       L_T_HOUR(2) TYPE N,
+       L_T_MINS(2) TYPE N,
+       L_T_SECS(2) TYPE N,
+*       L_HOUR TYPE INT2,
+       L_MINS TYPE INT2,
+       L_SECS TYPE INT2,
+       L_SUM_SECS TYPE I,
+       L_CUT_SECS TYPE I,
+       L_AF_SECS TYPE I,
+       L_MARGIN_SECS TYPE I.
+
+CLEAR : L_TIME,
+        L_DATE,
+        L_HOUR,
+        L_MINS,
+        L_SECS,
+        L_SUM_SECS,
+        L_MARGIN_SECS.
+START-OF-SELECTION .
+  L_CUT_SECS = 1200.
+  L_TIME = '011010'.
+  L_DATE = '20201231'.
+  L_HOUR = L_TIME+0(2).
+  L_MINS = L_TIME+2(2).
+  L_SECS = L_TIME+4(2).
+  L_SUM_SECS = ( L_HOUR * 3600 ) + ( L_MINS * 60 ) + L_SECS.
+  L_MARGIN_SECS = L_SUM_SECS - L_CUT_SECS.
+  IF L_MARGIN_SECS =< 0.
+    CLEAR : L_HOUR,L_MINS,L_SECS.
+    L_DATE = L_DATE - 1.
+    L_AF_SECS = 86400  + L_MARGIN_SECS.
+    L_HOUR  = L_AF_SECS DIV 3600.
+    L_MINS = ( L_AF_SECS - ( L_HOUR * 3600 ) ) DIV 60.
+    L_SECS = L_AF_SECS - ( L_HOUR * 3600 ) - ( L_MINS * 60 ).
+    L_T_HOUR = L_HOUR.
+    L_T_MINS = L_MINS.
+    L_T_SECS = L_SECS.
+CONCATENATE L_T_HOUR
+            L_T_MINS
+            L_T_SECS
+         INTO L_AF_TIME.
+ELSE.
+    L_HOUR  = L_MARGIN_SECS DIV 3600.
+    L_MINS = ( L_MARGIN_SECS - ( L_HOUR * 3600 ) ) DIV 60.
+    L_SECS = L_MARGIN_SECS - ( L_HOUR * 3600 ) - ( L_MINS * 60 ).
+    L_T_HOUR = L_HOUR.
+    L_T_MINS = L_MINS.
+    L_T_SECS = L_SECS.
+CONCATENATE L_T_HOUR
+            L_T_MINS
+            L_T_SECS
+         INTO L_AF_TIME.
+
+
+  ENDIF.
+
+  WRITE : L_TIME, L_AF_TIME.
