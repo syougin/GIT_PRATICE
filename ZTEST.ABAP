@@ -7,3 +7,5 @@ L_DATA = '7'.
 L_DATA2 = '8'.
 WRITE L_DATA.
 
+WRITE L_DATA2.
+
